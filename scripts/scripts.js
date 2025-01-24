@@ -1,4 +1,5 @@
 const users = [];
+console.log('Hello,World');
 
 document.getElementById('customerForm').addEventListener("submit", function(event){
     event.preventDefault();
