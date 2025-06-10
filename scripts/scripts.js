@@ -82,3 +82,73 @@ document.getElementById('customerForm').addEventListener("submit", function(even
         document.getElementById('output').innerHTML = output;
     })
 });
+
+document.getElementById('searchForm').addEventListener('submit', function(event){
+    event.preventDefault();
+    const searchField = document.getElementById('searchField').value;
+    const searchValue = document.getElementById('searchValue').value;
+
+    const filteredUsers = users.filter(user => user[searchField] == searchValue);
+
+    const output = `
+    <h2>Результаты поиска</h2>
+    <ul>
+        ${filteredUsers.map(user =>`
+            <li>
+                <p><strong>Фамилия:</strong>${user.lastName}</p>
+                <p><strong>Имя:</strong>${user.firstName}</p>
+                <p><strong>Отчество:</strong>${user.middleName}</p>
+                <p><strong>Пол:</strong>${user.gender}</p>
+                <p><strong>Национальность:</strong>${user.national}</p>
+                <p><strong>Рост:</strong>${user.height}</p>
+                <p><strong>Вес:</strong>${user.weight}</p>
+                <p><strong>Дата рождения:</strong>${user.dateBirthday}</p>
+                <p><strong>Номер телефона:</strong>${user.phone}</p>
+                <p><strong>Адрес:</strong>${user.address}</p>
+                <p><strong>Номер банковской карточки:</strong>${user.cardNumber}</p>
+                <p><strong>Номер банковского счета:</strong>${user.bankNumber}</p>
+                <p><strong>---------------------------------------------------------------------------</strong></p>
+            </li>
+            `).join('')}
+    </ul>
+    `;
+    document.getElementById('output').innerHTML = output;
+})
+
+document.getElementById('sortForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const sortOrder = document.getElementById('sortOrder').value;
+
+    const sortedUsers = users.slice().sort((a,b) => {
+        if (sortOrder === 'asc'){
+            return a.height - b.height;
+        }
+        else {
+            return b.height - a.height;
+        }
+    });
+
+    const output = `
+    <h2>Список пользователей, отсортированных по росту</h2>
+    <ul>
+        ${sortedUsers.map(user => `
+            <li>
+                <p><strong>Фамилия:</strong>${user.lastName}</p>
+                <p><strong>Имя:</strong>${user.firstName}</p>
+                <p><strong>Отчество:</strong>${user.middleName}</p>
+                <p><strong>Пол:</strong>${user.gender}</p>
+                <p><strong>Национальность:</strong>${user.national}</p>
+                <p><strong>Рост:</strong>${user.height}</p>
+                <p><strong>Вес:</strong>${user.weight}</p>
+                <p><strong>Дата рождения:</strong>${user.dateBirthday}</p>
+                <p><strong>Номер телефона:</strong>${user.phone}</p>
+                <p><strong>Адрес:</strong>${user.address}</p>
+                <p><strong>Номер банковской карточки:</strong>${user.cardNumber}</p>
+                <p><strong>Номер банковского счета:</strong>${user.bankNumber}</p>
+                <p><strong>---------------------------------------------------------------------------</strong></p>
+            </li>
+        `).join('')}
+    </ul>
+    `;
+    document.getElementById('output').innerHTML = output;
+})

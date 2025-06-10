@@ -55,6 +55,40 @@
         <div id="output" class="output"></div>
         <button type="button" id="showAllUsers">Показать всех пользователей</button>
 
+        <h2>Поиск пользователей</h2>
+        <form id="searchForm">
+            <label for="searchField">Поле для поиска:</label>
+            <select id="searchField">
+                <option value="lastName">Фамилия</option>
+                <option value="firstName">Имя</option>
+                <option value="middleName">Отчество</option>
+                <option value="gender">Пол</option>
+                <option value="national">Национальность</option>
+                <option value="height">Рост</option>
+                <option value="weight">Вес</option>
+                <option value="dateBirthday">Дата рождения</option>
+                <option value="phone">Номер телефона</option>
+                <option value="address">Адрес</option>
+                <option value="cardNumber">Номер банковской карточки</option>
+                <option value="bankNumber">Номер банковского счета</option>
+            </select>
+
+            <label for="searchValue">Значение для поиска:</label>
+            <input type="text" id="searchValue" required>
+
+            <button type="submit">Найти</button>
+        </form>
+
+        <h2>Сортировка пользователей по росту</h2>
+        <form id="sortForm">
+            <label for="sortOrder">Тип сортировки:</label>
+            <select id="sortOrder">
+                <option value="asc">По возрастанию</option>
+                <option value="desc">По убыванию</option>
+            </select>
+
+            <button type="submit">Сортировать</button>
+        </form>
     </div>
     <script src="scripts/scripts.js"></script>
 </body>

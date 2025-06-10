@@ -52,3 +52,73 @@ button:hover {
     border: 1px solid #b8daff;
     border-radius: 4px;
 }
+
+#searchForm {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e7f3fe;
+    border: 1px solid #b8daff;
+    border-radius: 4px;
+}
+
+#searchForm label {
+    display: block;
+    margin-top: 10px;
+}
+
+#searchForm input, #searchForm select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#searchForm button {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#searchForm button:hover {
+    background-color: #0056b3;
+}
+
+#sortForm {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e7f3fe;
+    border: 1px solid #b8daff;
+    border-radius: 4px;
+}
+
+#sortForm label {
+    display: block;
+    margin-top: 10px;
+}
+
+#sortForm select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#sortForm button {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#sortForm button:hover {
+    background-color: #0056b3;
+}
