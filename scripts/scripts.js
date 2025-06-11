@@ -1,154 +1,158 @@
-const users = [];
-console.log('Hello,World');
+class User {
+    constructor(data) {
+        this.lastName = data.lastName;
+        this.firstName = data.firstName;
+        this.middleName = data.middleName;
+        this.gender = data.gender;
+        this.national = data.national;
+        this.height = data.height;
+        this.weight = data.weight;
+        this.dateBirthday = data.dateBirthday;
+        this.phone = data.phone;
+        this.address = data.address;
+        this.cardNumber = data.cardNumber;
+        this.bankNumber = data.bankNumber;
+    }
 
-document.getElementById('customerForm').addEventListener("submit", function(event){
-    event.preventDefault();
-    const lastName = document.getElementById('lastName').value;
-    const firstName = document.getElementById('firstName').value;
-    const middleName = document.getElementById('middleName').value;
-    const gender = document.getElementById('gender').value;
-    const national = document.getElementById('national').value;
-    const height = document.getElementById('height').value;
-    const weight = document.getElementById('weight').value;
-    const dateBirthday = document.getElementById('birthDay').value;
-    const phone = document.getElementById('phone').value;
-    const address = document.getElementById('address').value;
-    const cardNumber = document.getElementById('cardNumber').value;
-    const bankNumber = document.getElementById('bankNumber').value;
+}
+class UserManager {
+    constructor() {
+        this.users = [];
+    }
+    addUser(userData) {
+        const user = new User(userData);
+        this.users.push(user);
+        return user;
+    }
+    getAllUsers() {
+        return [... this.users];
 
-    const user = {
-        lastName,
-        firstName,
-        middleName,
-        gender,
-        national,
-        height,
-        weight,
-        dateBirthday,
-        phone,
-        address,
-        cardNumber,
-        bankNumber
-    };
+    }
+    searchUsers(field, value) {
+        return this.users.filter(user => String(user[field]).includes(value));
 
-    users.push(user);
+    }
+    sortUserByHeight(order = 'asc') {
+        const sorted = [...this.users];
+        sorted.sort((a,b) => {
+            if (order === 'asc') {
+                return a.height - b.height;
+            } else {
+                return b.height - a.height;
+            }
+        });
+        return sorted;
+    }
+}
+class UserInterface {
+    constructor(userManager) {
+        this.userManager = userManager;
+        this.initElements();
+        this.bindEvents();
+    }
+    initElements() {
+        this.elements = {
+            customerForm: document.getElementById('customerForm'),
+            output: document.getElementById('output'),
+            showAllUsers: document.getElementById('showAllUsers'),
+            searchForm: document.getElementById('searchForm'),
+            sortForm: document.getElementById('sortForm')
+        };
+    }
+    bindEvents(){
+        this.elements.customerForm.addEventListener('submit', this.handleFormSubmit.bind(this));
+        this.elements.showAllUsers.addEventListener('click', this.showAllUsers.bind(this));
+        this.elements.searchForm.addEventListener('submit', this.handleSearch.bind(this));
+        this.elements.sortForm.addEventListener('submit', this.handleSort.bind(this));
 
-    const output = `
-    <h2>Последний добавленный пользователь</h2>
-    <ul>
-        <li>
-            <p><strong>Фамилия:</strong>${lastName}</p>
-            <p><strong>Имя:</strong>${firstName}</p>
-            <p><strong>Отчество:</strong>${middleName}</p>
-            <p><strong>Пол:</strong>${gender}</p>
-            <p><strong>Национальность:</strong>${national}</p>
-            <p><strong>Рост:</strong>${height}</p>
-            <p><strong>Вес:</strong>${weight}</p>
-            <p><strong>Дата рождения:</strong>${dateBirthday}</p>
-            <p><strong>Номер телефона:</strong>${phone}</p>
-            <p><strong>Адрес:</strong>${address}</p>
-            <p><strong>Номер банковской карточки:</strong>${cardNumber}</p>
-            <p><strong>Номер банковского счета:</strong>${bankNumber}</p>
-        </li>
-    </ul>
+    }
+
+    handleFormSubmit(event) {
+        event.preventDefault();
+        const formData = this.getFormData(event.target);
+        const user = this.userManager.addUser(formData);
+
+        this.displayUser(user, 'Последний добавленный пользователь');
+        event.target.reset();
+    }
+    getFormData(form) {
+        return {
+            lastName: form.querySelector('#lastName').value,
+            firstName: form.querySelector('#firstName').value,
+            middleName: form.querySelector('#middleName').value,
+            gender: form.querySelector('#gender').value,
+            national: form.querySelector('#national').value,
+            height: parseInt(form.querySelector('#height').value),
+            weight: parseInt(form.querySelector('#weight').value),
+            dateBirthday: form.querySelector('#birthDay').value,
+            phone: form.querySelector('#phone').value,
+            address: form.querySelector('#address').value,
+            cardNumber: form.querySelector('#cardNumber').value,
+            bankNumber: form.querySelector('#bankNumber').value
+
+        };
+    }
+    showAllUsers() {
+        const users = this.userManager.getAllUsers();
+        this.displayUsersList(users,'Список всех пользователей');
+
+    }
+    handleSearch(event) {
+        event.preventDefault();
+        const field = event.target.querySelector('#searchField').value;
+        const value = event.target.querySelector('#searchValue').value;
+        const results = this.userManager.searchUsers(field, value);
+
+        this.displayUsersList(results, 'Результаты поиска');
+
+    }
+    handleSort(event) {
+        event.preventDefault();
+        const order = event.target.querySelector('#sortOrder').value;
+        const sortedUsers = this.userManager.sortUserByHeight(order);
+
+        this.displayUsersList(sortedUsers, 'Список пользователей, отсортированных по росту');
+    }
+
+    displayUser(user, title) {
+        this.elements.output.innerHTML = this.generateUserHTML(user, title);
+    }
+    displayUsersList(users, title) {
+        if (users.length === 0) {
+            this.elements.output.innerHTML = `<h2>${title}</h2><p>Нет данных для отображения</p>`;
+            return;
+        }
+
+        const usersHTML = users.map(user => this.generateUserHTML(user)).join('');
+        this.elements.output.innerHTML = `
+      <h2>${title}</h2>
+      <ul>${usersHTML}</ul>
     `;
-    
-    document.getElementById('output').innerHTML = output;
-    document.getElementById('customerForm').reset();
+    }
 
-    document.getElementById('showAllUsers').addEventListener('click', function() {
-        const output = `
-        <h2>Список всех пользователей</h2>
-        <ul>
-            ${users.map(user => `
-                <li>
-                    <p><strong>Фамилия:</strong>${user.lastName}</p>
-                    <p><strong>Имя:</strong>${user.firstName}</p>
-                    <p><strong>Отчество:</strong>${user.middleName}</p>
-                    <p><strong>Пол:</strong>${user.gender}</p>
-                    <p><strong>Национальность:</strong>${user.national}</p>
-                    <p><strong>Рост:</strong>${user.height}</p>
-                    <p><strong>Вес:</strong>${user.weight}</p>
-                    <p><strong>Дата рождения:</strong>${user.dateBirthday}</p>
-                    <p><strong>Номер телефона:</strong>${user.phone}</p>
-                    <p><strong>Адрес:</strong>${user.address}</p>
-                    <p><strong>Номер банковской карточки:</strong>${user.cardNumber}</p>
-                    <p><strong>Номер банковского счета:</strong>${user.bankNumber}</p>
-                    <p><strong>---------------------------------------------------------------------------</strong></p>
-                </li>
-            `).join('')}
-        </ul>
-        `;
-        document.getElementById('output').innerHTML = output;
-    })
+    generateUserHTML(user, title = '') {
+        return `
+      ${title ? `<h2>${title}</h2>` : ''}
+      <li>
+        <p><strong>Фамилия:</strong> ${user.lastName}</p>
+        <p><strong>Имя:</strong> ${user.firstName}</p>
+        <p><strong>Отчество:</strong> ${user.middleName}</p>
+        <p><strong>Пол:</strong> ${user.gender}</p>
+        <p><strong>Национальность:</strong> ${user.national}</p>
+        <p><strong>Рост:</strong> ${user.height}</p>
+        <p><strong>Вес:</strong> ${user.weight}</p>
+        <p><strong>Дата рождения:</strong> ${user.dateBirthday}</p>
+        <p><strong>Номер телефона:</strong> ${user.phone}</p>
+        <p><strong>Адрес:</strong> ${user.address}</p>
+        <p><strong>Номер банковской карточки:</strong> ${user.cardNumber}</p>
+        <p><strong>Номер банковского счета:</strong> ${user.bankNumber}</p>
+        <hr>
+      </li>
+    `;
+    }
+
+}
+document.addEventListener('DOMContentLoaded', () => {
+    const userManager = new UserManager();
+    new UserInterface(userManager);
 });
-
-document.getElementById('searchForm').addEventListener('submit', function(event){
-    event.preventDefault();
-    const searchField = document.getElementById('searchField').value;
-    const searchValue = document.getElementById('searchValue').value;
-
-    const filteredUsers = users.filter(user => user[searchField] == searchValue);
-
-    const output = `
-    <h2>Результаты поиска</h2>
-    <ul>
-        ${filteredUsers.map(user =>`
-            <li>
-                <p><strong>Фамилия:</strong>${user.lastName}</p>
-                <p><strong>Имя:</strong>${user.firstName}</p>
-                <p><strong>Отчество:</strong>${user.middleName}</p>
-                <p><strong>Пол:</strong>${user.gender}</p>
-                <p><strong>Национальность:</strong>${user.national}</p>
-                <p><strong>Рост:</strong>${user.height}</p>
-                <p><strong>Вес:</strong>${user.weight}</p>
-                <p><strong>Дата рождения:</strong>${user.dateBirthday}</p>
-                <p><strong>Номер телефона:</strong>${user.phone}</p>
-                <p><strong>Адрес:</strong>${user.address}</p>
-                <p><strong>Номер банковской карточки:</strong>${user.cardNumber}</p>
-                <p><strong>Номер банковского счета:</strong>${user.bankNumber}</p>
-                <p><strong>---------------------------------------------------------------------------</strong></p>
-            </li>
-            `).join('')}
-    </ul>
-    `;
-    document.getElementById('output').innerHTML = output;
-})
-
-document.getElementById('sortForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const sortOrder = document.getElementById('sortOrder').value;
-
-    const sortedUsers = users.slice().sort((a,b) => {
-        if (sortOrder === 'asc'){
-            return a.height - b.height;
-        }
-        else {
-            return b.height - a.height;
-        }
-    });
-
-    const output = `
-    <h2>Список пользователей, отсортированных по росту</h2>
-    <ul>
-        ${sortedUsers.map(user => `
-            <li>
-                <p><strong>Фамилия:</strong>${user.lastName}</p>
-                <p><strong>Имя:</strong>${user.firstName}</p>
-                <p><strong>Отчество:</strong>${user.middleName}</p>
-                <p><strong>Пол:</strong>${user.gender}</p>
-                <p><strong>Национальность:</strong>${user.national}</p>
-                <p><strong>Рост:</strong>${user.height}</p>
-                <p><strong>Вес:</strong>${user.weight}</p>
-                <p><strong>Дата рождения:</strong>${user.dateBirthday}</p>
-                <p><strong>Номер телефона:</strong>${user.phone}</p>
-                <p><strong>Адрес:</strong>${user.address}</p>
-                <p><strong>Номер банковской карточки:</strong>${user.cardNumber}</p>
-                <p><strong>Номер банковского счета:</strong>${user.bankNumber}</p>
-                <p><strong>---------------------------------------------------------------------------</strong></p>
-            </li>
-        `).join('')}
-    </ul>
-    `;
-    document.getElementById('output').innerHTML = output;
-})
